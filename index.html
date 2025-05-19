@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AFII Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+    }
+    label, input {
+      display: block;
+      margin: 10px 0;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 8px;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Adjusted Ferritin Inflammation Index (AFII) Calculator</h1>
+  <label for="albumin">Albumin (g/L):</label>
+  <input type="number" id="albumin" step="0.01">
+
+  <label for="ferritin">Ferritin (ng/mL):</label>
+  <input type="number" id="ferritin" step="0.1">
+
+  <label for="crp">CRP (mg/L):</label>
+  <input type="number" id="crp" step="0.1">
+
+  <button onclick="calculateAFII()">Calculate AFII</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    function calculateAFII() {
+      const albumin = parseFloat(document.getElementById('albumin').value);
+      const ferritin = parseFloat(document.getElementById('ferritin').value);
+      const crp = parseFloat(document.getElementById('crp').value);
+
+      if (isNaN(albumin) || isNaN(ferritin) || isNaN(crp) || crp <= 0) {
+        document.getElementById('result').textContent = "Please enter valid values. CRP must be > 0.";
+        return;
+      }
+
+      const rawScore = (albumin * -0.168) + ((ferritin / crp) * -0.012) + 6.958;
+      const afii = Math.log2(rawScore);
+      const rounded = afii.toFixed(2);
+      let risk = "";
+
+      if (afii < 2.1) {
+        risk = "Low risk (AFII < 2.1)";
+      } else {
+        risk = "High risk (AFII ≥ 2.1)";
+      }
+
+      document.getElementById('result').textContent = `AFII Score: ${rounded} → ${risk}`;
+    }
+  </script>
+</body>
+</html>
